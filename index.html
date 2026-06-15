@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amour & Co. - Planejador de Casamento Premium</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css?v=1.3">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i data-lucide="heart" class="brand-icon"></i>
+                <div class="brand-info">
+                    <h1>Amour & Co.</h1>
+                    <span>Wedding Planner</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+                    <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+                </a>
+                <a href="#vendors" class="nav-item" data-tab="vendors">
+                    <i data-lucide="users"></i> <span>Fornecedores</span>
+                </a>
+                <a href="#comparator" class="nav-item" data-tab="comparator">
+                    <i data-lucide="columns"></i> <span>Comparador</span>
+                </a>
+                <a href="#decision-center" class="nav-item" data-tab="decision-center">
+                    <i data-lucide="award"></i> <span>Central de Decisão</span>
+                </a>
+                <a href="#finance" class="nav-item" data-tab="finance">
+                    <i data-lucide="dollar-sign"></i> <span>Controle Financeiro</span>
+                </a>
+                <a href="#goals" class="nav-item" data-tab="goals">
+                    <i data-lucide="trending-up"></i> <span>Metas e Simulações</span>
+                </a>
+                <a href="#checklist" class="nav-item" data-tab="checklist">
+                    <i data-lucide="check-square"></i> <span>Checklist</span>
+                </a>
+                <a href="#calendar" class="nav-item" data-tab="calendar">
+                    <i data-lucide="calendar"></i> <span>Cronograma</span>
+                </a>
+                <a href="#contracts" class="nav-item" data-tab="contracts">
+                    <i data-lucide="file-text"></i> <span>Contratos e Anexos</span>
+                </a>
+                <a href="#guests" class="nav-item" data-tab="guests">
+                    <i data-lucide="users-round"></i> <span>Lista de Convidados</span>
+                </a>
+                <a href="#ai-assistant" class="nav-item" data-tab="ai-assistant">
+                    <i data-lucide="sparkles"></i> <span>Assistente IA</span>
+                </a>
+                <a href="#extras" class="nav-item" data-tab="extras">
+                    <i data-lucide="gift"></i> <span>Inspiracões & Extras</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="btn-theme-toggle" class="btn-icon-toggle" title="Alternar Tema">
+                    <i data-lucide="moon" class="theme-icon-dark"></i>
+                    <i data-lucide="sun" class="theme-icon-light" style="display:none;"></i>
+                    <span>Modo Escuro</span>
+                </button>
+                <div class="sync-status">
+                    <i data-lucide="cloud-lightning" class="sync-icon"></i>
+                    <span>Dados Salvos Localmente</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <div class="wedding-countdown-widget">
+                        <span class="countdown-label">Faltam</span>
+                        <span id="countdown-days" class="countdown-days">000</span>
+                        <span class="countdown-label">dias para o grande dia!</span>
+                        <input type="date" id="wedding-date-picker" class="date-picker-inline" title="Definir Data do Casamento">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="quick-stats">
+                        <div class="quick-stat-item">
+                            <span class="stat-label">Orçamento Total</span>
+                            <span id="quick-total-budget" class="stat-value">R$ 0,00</span>
+                        </div>
+                        <div class="quick-stat-item">
+                            <span class="stat-label">Total Pago</span>
+                            <span id="quick-total-paid" class="stat-value text-success">R$ 0,00</span>
+                        </div>
+                        <div class="quick-stat-item">
+                            <span class="stat-label">Progresso</span>
+                            <div class="progress-bar-container">
+                                <div id="quick-progress-fill" class="progress-fill" style="width: 0%"></div>
+                                <span id="quick-progress-text" class="progress-text">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="btn-quick-export">
+                        <i data-lucide="download"></i> Exportar
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Body (Dynamic Tabs) -->
+            <section class="content-body">
+
+                <!-- 1. DASHBOARD TAB -->
+                <div id="tab-dashboard" class="tab-pane active">
+                    <div class="dashboard-grid">
+                        <!-- Top Cards -->
+                        <div class="card card-summary gradient-gold">
+                            <div class="card-icon"><i data-lucide="heart"></i></div>
+                            <div class="card-info">
+                                <h3>Data do Casamento</h3>
+                                <p id="dash-wedding-date" class="highlight-val">--/--/----</p>
+                                <span id="dash-countdown-details">A definir</span>
+                            </div>
+                        </div>
+                        <div class="card card-summary">
+                            <div class="card-icon color-blue"><i data-lucide="wallet"></i></div>
+                            <div class="card-info">
+                                <h3>Orçamento Estimado</h3>
+                                <p id="dash-total-budget" class="highlight-val">R$ 0,00</p>
+                                <span>Definido no planejamento financeiro</span>
+                            </div>
+                        </div>
+                        <div class="card card-summary">
+                            <div class="card-icon color-green"><i data-lucide="check-circle2"></i></div>
+                            <div class="card-info">
+                                <h3>Valor Comprometido</h3>
+                                <p id="dash-committed-budget" class="highlight-val">R$ 0,00</p>
+                                <span id="dash-committed-percentage">0% do total</span>
+                            </div>
+                        </div>
+                        <div class="card card-summary">
+                            <div class="card-icon color-purple"><i data-lucide="percent"></i></div>
+                            <div class="card-info">
+                                <h3>Progresso Geral</h3>
+                                <p id="dash-progress-percent" class="highlight-val">0%</p>
+                                <span id="dash-completed-tasks">0 de 0 tarefas concluídas</span>
+                            </div>
+                        </div>
+
+                        <!-- Financial Health Gauge -->
+                        <div class="card col-span-2">
+                            <div class="card-header">
+                                <h2>Saúde Financeira do Casamento</h2>
+                                <i data-lucide="activity" class="card-header-icon"></i>
+                            </div>
+                            <div class="health-score-container">
+                                <div class="gauge-wrapper">
+                                    <div class="gauge-body">
+                                        <div class="gauge-fill" id="health-gauge-fill" style="transform: rotate(0.25turn)"></div>
+                                        <div class="gauge-cover"><span id="health-score-value">0</span></div>
+                                    </div>
+                                </div>
+                                <div class="health-score-text">
+                                    <h4 id="health-score-title">Análise de Custos</h4>
+                                    <p id="health-score-desc">Insira dados financeiros para calcular a saúde do seu orçamento.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Financial Overview Charts -->
+                        <div class="card col-span-2">
+                            <div class="card-header">
+                                <h2>Resumo Financeiro</h2>
+                                <i data-lucide="pie-chart" class="card-header-icon"></i>
+                            </div>
+                            <div class="chart-container-large">
+                                <canvas id="chart-dashboard-finance"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- General Stats & Short-cuts -->
+                        <div class="card col-span-2">
+                            <div class="card-header">
+                                <h2>Informações Rápidas</h2>
+                                <i data-lucide="info" class="card-header-icon"></i>
+                            </div>
+                            <div class="quick-stats-list">
+                                <div class="quick-stat-row">
+                                    <span>Fornecedores Contratados</span>
+                                    <strong id="dash-stat-vendors">0 de 17 categorias</strong>
+                                </div>
+                                <div class="quick-stat-row">
+                                    <span>Convidados Confirmados</span>
+                                    <strong id="dash-stat-guests">0 confirmados (0 pendentes)</strong>
+                                </div>
+                                <div class="quick-stat-row">
+                                    <span>Valor Pago</span>
+                                    <strong id="dash-stat-paid" class="text-success">R$ 0,00</strong>
+                                </div>
+                                <div class="quick-stat-row">
+                                    <span>Valor Restante (Falta Pagar)</span>
+                                    <strong id="dash-stat-remaining" class="text-danger">R$ 0,00</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Next events and tasks -->
+                        <div class="card col-span-2">
+                            <div class="card-header">
+                                <h2>Próximas Atividades</h2>
+                                <i data-lucide="calendar-check" class="card-header-icon"></i>
+                            </div>
+                            <ul class="dashboard-activity-list" id="dash-activities-list">
+                                <li class="empty-list-message">Nenhum evento ou tarefa urgente programada.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. VENDORS TAB -->
+                <div id="tab-vendors" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Gerenciamento de Fornecedores</h2>
+                            <p class="section-desc">Cadastre, gerencie e controle o status dos fornecedores para o seu grande dia.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-add-vendor">
+                            <i data-lucide="plus"></i> Novo Fornecedor
+                        </button>
+                    </div>
+
+                    <div class="filters-bar">
+                        <div class="search-input-wrapper">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="search-vendor" placeholder="Buscar fornecedor por nome...">
+                        </div>
+                        <div class="select-wrapper">
+                            <select id="filter-vendor-category">
+                                <option value="">Todas as Categorias</option>
+                                <!-- Categories loaded dynamically -->
+                            </select>
+                        </div>
+                        <div class="select-wrapper">
+                            <select id="filter-vendor-status">
+                                <option value="">Todos os Status</option>
+                                <option value="Pesquisando">Pesquisando</option>
+                                <option value="Orçamento recebido">Orçamento recebido</option>
+                                <option value="Em negociação">Em negociação</option>
+                                <option value="Fechado">Fechado</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="vendors-grid" id="vendors-list-container">
+                        <!-- Dynamic vendors cards load here -->
+                    </div>
+                </div>
+
+                <!-- 3. COMPARATOR TAB -->
+                <div id="tab-comparator" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Comparador de Fornecedores</h2>
+                            <p class="section-desc">Compare orçamentos cadastrados para a mesma categoria e encontre a melhor opção custo-benefício.</p>
+                        </div>
+                        <div class="select-wrapper">
+                            <select id="comparator-category-select">
+                                <option value="">Selecione uma Categoria...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="comparator-empty-state" class="empty-state">
+                        <i data-lucide="git-compare"></i>
+                        <h3>Escolha uma Categoria</h3>
+                        <p>Selecione uma categoria no menu acima para iniciar a comparação visual de propostas.</p>
+                    </div>
+
+                    <div id="comparator-content" class="comparator-layout hidden">
+                        <div class="comparator-main">
+                            <!-- Cards of compared items -->
+                            <div class="comparator-cards-grid" id="comparator-cards-container">
+                                <!-- Cards injected by JS -->
+                            </div>
+
+                            <!-- Highlights -->
+                            <div class="highlights-grid">
+                                <div class="highlight-card success">
+                                    <span class="highlight-title">Mais Econômico 💸</span>
+                                    <h4 id="compare-cheapest-name">-</h4>
+                                    <p id="compare-cheapest-value">R$ 0,00</p>
+                                </div>
+                                <div class="highlight-card premium">
+                                    <span class="highlight-title">Melhor Custo-Benefício ⭐</span>
+                                    <h4 id="compare-best-value-name">-</h4>
+                                    <p id="compare-best-value-score">-</p>
+                                </div>
+                                <div class="highlight-card info">
+                                    <span class="highlight-title">Melhor Avaliação 🏆</span>
+                                    <h4 id="compare-best-rating-name">-</h4>
+                                    <p id="compare-best-rating-val">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comparator-sidebar">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>Comparação de Preços</h2>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="chart-compare-prices"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. DECISION CENTER TAB -->
+                <div id="tab-decision-center" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Central de Decisão</h2>
+                            <p class="section-desc">Atribua notas aos fornecedores de uma mesma categoria e deixe o sistema sugerir a melhor opção matemática.</p>
+                        </div>
+                        <div class="select-wrapper">
+                            <select id="decision-category-select">
+                                <option value="">Selecione uma Categoria...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="decision-empty-state" class="empty-state">
+                        <i data-lucide="award"></i>
+                        <h3>Selecione uma Categoria</h3>
+                        <p>Escolha a categoria que deseja analisar para avaliar e classificar os fornecedores.</p>
+                    </div>
+
+                    <div id="decision-content" class="hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Matriz de Decisão Multicritério</h2>
+                                <span class="badge badge-info">Pesos Iguais</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table" id="decision-matrix-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Fornecedor</th>
+                                            <th>Preço (1-10)</th>
+                                            <th>Qualidade (1-10)</th>
+                                            <th>Atendimento (1-10)</th>
+                                            <th>Localização (1-10)</th>
+                                            <th>Benefícios (1-10)</th>
+                                            <th>Pontuação Geral</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="decision-matrix-body">
+                                        <!-- Injected by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- System Recommendation Box -->
+                        <div class="recommendation-box alert-box info-alert margin-top-lg" id="decision-recommendation-box">
+                            <i data-lucide="info" class="alert-icon"></i>
+                            <div class="alert-content">
+                                <h4>Recomendação do Sistema</h4>
+                                <p id="decision-recommendation-text">Insira notas acima (clique em salvar) para ver a recomendação automática.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. FINANCE TAB -->
+                <div id="tab-finance" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Controle Financeiro</h2>
+                            <p class="section-desc">Acompanhe todos os gastos consolidados, contratos fechados e estimativas de custos.</p>
+                        </div>
+                    </div>
+
+                    <div class="finance-summary-grid">
+                        <div class="finance-card">
+                            <span class="finance-label">Custo Total Estimado</span>
+                            <h3 id="fin-total-budget">R$ 0,00</h3>
+                            <span class="subtext">Soma de todos os contratos e estimativas</span>
+                        </div>
+                        <div class="finance-card">
+                            <span class="finance-label">Valor Guardado</span>
+                            <div class="savings-input-wrapper" style="margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                                <span style="font-weight: 600; color: var(--text-primary); font-size: 1.25rem;">R$</span>
+                                <input type="number" id="fin-current-savings" class="form-control" style="width: 100%; font-size: 1.5rem; font-weight: 700; border: none; background: transparent; padding: 2px 0; outline: none; border-bottom: 2px dashed var(--accent-color); color: var(--text-primary);" min="0" value="0">
+                            </div>
+                            <span class="subtext">Sincronizado com a meta financeira</span>
+                        </div>
+                        <div class="finance-card">
+                            <span class="finance-label">Contratos Fechados</span>
+                            <h3 id="fin-closed-contracts" class="text-primary">R$ 0,00</h3>
+                            <span id="fin-closed-count" class="subtext">0 fornecedores contratados</span>
+                        </div>
+                        <div class="finance-card">
+                            <span class="finance-label">Previsão Pendente (Não Fechados)</span>
+                            <h3 id="fin-pending-contracts">R$ 0,00</h3>
+                            <span class="subtext">Estimativas de categorias não fechadas</span>
+                        </div>
+                        <div class="finance-card">
+                            <span class="finance-label">Total Efetivamente Pago</span>
+                            <h3 id="fin-total-paid" class="text-success">R$ 0,00</h3>
+                            <span id="fin-paid-percentage" class="subtext">0% pago do valor fechado</span>
+                        </div>
+                        <div class="finance-card">
+                            <span class="finance-label">Saldo Restante a Pagar</span>
+                            <h3 id="fin-balance-due" class="text-danger">R$ 0,00</h3>
+                            <span class="subtext">Diferença entre fechados e pagos</span>
+                        </div>
+                    </div>
+
+                    <div class="finance-charts-grid margin-top-lg">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Gastos por Categoria</h2>
+                                <i data-lucide="bar-chart-2" class="card-header-icon"></i>
+                            </div>
+                            <div class="chart-container-large">
+                                <canvas id="chart-finance-categories"></canvas>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Proporção de Custos</h2>
+                                <i data-lucide="donut-chart" class="card-header-icon"></i>
+                            </div>
+                            <div class="chart-container-large">
+                                <canvas id="chart-finance-distribution"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. GOALS & SIMULATIONS TAB -->
+                <div id="tab-goals" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Planejamento de Meta Financeira</h2>
+                            <p class="section-desc">Simule e planeje como acumular a quantia necessária para cobrir os custos do casamento.</p>
+                        </div>
+                    </div>
+
+                    <div class="goals-layout">
+                        <div class="goals-form-panel">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>Dados de Entrada</h2>
+                                </div>
+                                <form id="form-goals" class="form-grid">
+                                    <div class="form-group col-span-2">
+                                        <label for="goal-current-savings">Quanto você possui guardado hoje? (R$)</label>
+                                        <input type="number" id="goal-current-savings" class="form-control" value="10000" min="0" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="goal-monthly-savings">Quanto consegue poupar/mês? (R$)</label>
+                                        <input type="number" id="goal-monthly-savings" class="form-control" value="1000" min="0" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="goal-monthly-investment">Quanto pretende investir/mês? (R$)</label>
+                                        <input type="number" id="goal-monthly-investment" class="form-control" value="500" min="0" required>
+                                    </div>
+                                    <div class="form-group col-span-2">
+                                        <label for="goal-target-date">Data Alvo do Casamento</label>
+                                        <input type="date" id="goal-target-date" class="form-control" required>
+                                    </div>
+                                    <div class="form-group col-span-2">
+                                        <button type="submit" class="btn btn-primary w-full">Calcular Meta e Cenários</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Date Simulator extra -->
+                            <div class="card margin-top-md">
+                                <div class="card-header">
+                                    <h2>Simulador de Data de Casamento</h2>
+                                </div>
+                                <div class="card-body">
+                                    <p class="section-desc">Arraste a barra para simular o adiamento ou adiantamento do casamento e veja o impacto na economia mensal necessária.</p>
+                                    <div class="range-slider-wrapper">
+                                        <label for="date-simulator-range">Meses adicionais de prazo: <span id="date-sim-months-display">0 meses</span></label>
+                                        <input type="range" id="date-simulator-range" min="-6" max="18" value="0" class="slider">
+                                    </div>
+                                    <div class="sim-result-box margin-top-md">
+                                        <div>
+                                            <span>Nova Data Simulada:</span>
+                                            <strong id="sim-date-result">--/--/----</strong>
+                                        </div>
+                                        <div class="margin-top-sm">
+                                            <span>Economia Mensal Necessária:</span>
+                                            <strong id="sim-monthly-required">R$ 0,00</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="goals-results-panel">
+                            <!-- Goal status card -->
+                            <div class="card result-card" id="goal-status-card">
+                                <div class="card-body text-center">
+                                    <div class="status-icon-badge" id="goal-status-badge">
+                                        <i data-lucide="alert-triangle"></i>
+                                    </div>
+                                    <h3 id="goal-status-title">Preencha os dados</h3>
+                                    <p id="goal-status-description">Calcule para visualizar as estatísticas de acúmulo de capital.</p>
+                                </div>
+                            </div>
+
+                            <!-- Scenarios comparison -->
+                            <div class="card margin-top-md">
+                                <div class="card-header">
+                                    <h2>Simulações de Rendimento</h2>
+                                </div>
+                                <div class="scenarios-grid">
+                                    <div class="scenario-box conservative">
+                                        <h4>Conservador</h4>
+                                        <p class="interest-rate">Poupança (~6% a.a.)</p>
+                                        <h3 id="scenario-cons-total">R$ 0,00</h3>
+                                        <span id="scenario-cons-status">-</span>
+                                    </div>
+                                    <div class="scenario-box realistic active">
+                                        <h4>Realista</h4>
+                                        <p class="interest-rate">Renda Fixa/CDI (~10.5% a.a.)</p>
+                                        <h3 id="scenario-real-total">R$ 0,00</h3>
+                                        <span id="scenario-real-status">-</span>
+                                    </div>
+                                    <div class="scenario-box optimistic">
+                                        <h4>Otimista</h4>
+                                        <p class="interest-rate">Carteira Diversificada (~14% a.a.)</p>
+                                        <h3 id="scenario-opt-total">R$ 0,00</h3>
+                                        <span id="scenario-opt-status">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Evolution Chart -->
+                            <div class="card margin-top-md">
+                                <div class="card-header">
+                                    <h2>Evolução Patrimonial Prevista</h2>
+                                </div>
+                                <div class="chart-container-large">
+                                    <canvas id="chart-goals-evolution"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. CHECKLIST TAB -->
+                <div id="tab-checklist" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Checklist do Casamento</h2>
+                            <p class="section-desc">Acompanhe tarefas distribuídas ao longo dos meses que antecedem o casamento ou adicione itens personalizados.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-add-task">
+                            <i data-lucide="plus"></i> Nova Tarefa
+                        </button>
+                    </div>
+
+                    <div class="checklist-layout">
+                        <!-- Left timeline filter -->
+                        <aside class="checklist-sidebar">
+                            <div class="period-list" id="checklist-period-filters">
+                                <button class="period-btn active" data-period="all">Ver Todas</button>
+                                <button class="period-btn" data-period="12m">12 meses antes</button>
+                                <button class="period-btn" data-period="9m">9 meses antes</button>
+                                <button class="period-btn" data-period="6m">6 meses antes</button>
+                                <button class="period-btn" data-period="3m">3 meses antes</button>
+                                <button class="period-btn" data-period="1m">1 mês antes</button>
+                                <button class="period-btn" data-period="1w">1 semana antes</button>
+                            </div>
+                        </aside>
+
+                        <!-- Tasks container -->
+                        <div class="checklist-main">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 id="checklist-current-view-title">Todas as Tarefas</h2>
+                                    <span class="badge badge-primary" id="checklist-task-counter">0 / 0 concluídas</span>
+                                </div>
+                                <div class="checklist-items-container" id="checklist-items-container">
+                                    <!-- Dynamic tasks list -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. CALENDAR/SCHEDULE TAB -->
+                <div id="tab-calendar" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Cronograma e Agenda</h2>
+                            <p class="section-desc">Planeje reuniões, datas de degustação, ensaios, pagamentos e eventos especiais do casamento.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-add-event">
+                            <i data-lucide="calendar-plus"></i> Novo Compromisso
+                        </button>
+                    </div>
+
+                    <div class="calendar-layout">
+                        <div class="calendar-main-panel">
+                            <div class="card">
+                                <div class="calendar-header-nav">
+                                    <button class="btn-icon" id="btn-prev-month"><i data-lucide="chevron-left"></i></button>
+                                    <h2 id="calendar-month-year">Junho 2026</h2>
+                                    <button class="btn-icon" id="btn-next-month"><i data-lucide="chevron-right"></i></button>
+                                </div>
+                                <div class="calendar-grid">
+                                    <div class="calendar-day-header">Dom</div>
+                                    <div class="calendar-day-header">Seg</div>
+                                    <div class="calendar-day-header">Ter</div>
+                                    <div class="calendar-day-header">Qua</div>
+                                    <div class="calendar-day-header">Qui</div>
+                                    <div class="calendar-day-header">Sex</div>
+                                    <div class="calendar-day-header">Sáb</div>
+                                    <!-- Grid days injected dynamically -->
+                                    <div class="calendar-days-container" id="calendar-days-container"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="calendar-sidebar-panel">
+                            <div class="card h-full">
+                                <div class="card-header">
+                                    <h2>Compromissos do Mês</h2>
+                                </div>
+                                <ul class="agenda-list" id="agenda-items-list">
+                                    <li class="empty-list-message">Nenhum evento neste mês.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9. CONTRACTS TAB -->
+                <div id="tab-contracts" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Gestão de Contratos e Comprovantes</h2>
+                            <p class="section-desc">Guarde os contratos digitais de fornecedores, registre recibos de pagamentos e acompanhe o histórico de alterações.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-add-document">
+                            <i data-lucide="upload-cloud"></i> Anexar Documento
+                        </button>
+                    </div>
+
+                    <div class="contracts-layout">
+                        <div class="contracts-list-panel">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>Documentos Anexados</h2>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Fornecedor</th>
+                                                <th>Tipo</th>
+                                                <th>Nome do Arquivo</th>
+                                                <th>Tamanho</th>
+                                                <th>Data Upload</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="contracts-table-body">
+                                            <!-- Injected dynamically by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Installment Plan Tracker -->
+                            <div class="card margin-top-md">
+                                <div class="card-header">
+                                    <h2>Cronograma de Pagamento de Parcelas</h2>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Fornecedor</th>
+                                                <th>Parcela</th>
+                                                <th>Vencimento</th>
+                                                <th>Valor</th>
+                                                <th>Status</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="installments-table-body">
+                                            <!-- Injected dynamically by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Audit Log / Changes History -->
+                        <div class="contracts-sidebar-panel">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>Histórico de Alterações</h2>
+                                    <i data-lucide="history" class="card-header-icon"></i>
+                                </div>
+                                <ul class="audit-log-list" id="audit-log-container">
+                                    <li class="empty-list-message">Nenhuma alteração registrada ainda.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10. GUESTS TAB -->
+                <div id="tab-guests" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Lista de Convidados</h2>
+                            <p class="section-desc">Gerencie os convidados do casamento, controle confirmações (RSVP), organize as mesas e veja estatísticas.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-add-guest">
+                            <i data-lucide="user-plus"></i> Novo Convidado
+                        </button>
+                    </div>
+
+                    <!-- Guest Stats Row -->
+                    <div class="guest-stats-row">
+                        <div class="guest-stat-box">
+                            <h4 id="guest-stat-total">0</h4>
+                            <span>Total Convidados</span>
+                        </div>
+                        <div class="guest-stat-box">
+                            <h4 id="guest-stat-confirmed" class="text-success">0</h4>
+                            <span>Confirmados</span>
+                        </div>
+                        <div class="guest-stat-box">
+                            <h4 id="guest-stat-pending" class="text-warning">0</h4>
+                            <span>Pendentes</span>
+                        </div>
+                        <div class="guest-stat-box">
+                            <h4 id="guest-stat-declined" class="text-danger">0</h4>
+                            <span>Recusados</span>
+                        </div>
+                        <div class="guest-stat-box">
+                            <h4 id="guest-stat-breakdown">0 / 0</h4>
+                            <span>Adultos / Crianças</span>
+                        </div>
+                    </div>
+
+                    <!-- Table card -->
+                    <div class="card margin-top-md">
+                        <div class="filters-bar no-border">
+                            <div class="search-input-wrapper">
+                                <i data-lucide="search"></i>
+                                <input type="text" id="search-guest" placeholder="Buscar por nome do convidado...">
+                            </div>
+                            <div class="select-wrapper">
+                                <select id="filter-guest-rsvp">
+                                    <option value="">Todos os status (RSVP)</option>
+                                    <option value="Confirmado">Confirmados</option>
+                                    <option value="Pendente">Pendentes</option>
+                                    <option value="Recusado">Recusados</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Tipo</th>
+                                        <th>Companhante de</th>
+                                        <th>Mesa</th>
+                                        <th>RSVP</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="guests-table-body">
+                                    <!-- Injected dynamically by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 11. AI ASSISTANT TAB -->
+                <div id="tab-ai-assistant" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Assistente Inteligente de Casamento</h2>
+                            <p class="section-desc">Nossa IA analisa em tempo real seus orçamentos, cronograma e tarefas para dar recomendações de economia.</p>
+                        </div>
+                        <button class="btn btn-secondary" id="btn-run-ai-analysis">
+                            <i data-lucide="refresh-cw"></i> Recalcular Análise
+                        </button>
+                    </div>
+
+                    <div class="ai-layout">
+                        <!-- AI Analysis Board -->
+                        <div class="ai-main-panel">
+                            <!-- Budget Score Card -->
+                            <div class="card card-ai-hero">
+                                <div class="ai-hero-content">
+                                    <div class="ai-avatar">
+                                        <i data-lucide="sparkles"></i>
+                                    </div>
+                                    <div>
+                                        <h3>Olá! Sou sua Assessora Financeira Virtual</h3>
+                                        <p>Com base nos dados atuais de planejamento, fiz um diagnóstico completo da saúde do seu casamento. Veja os pontos de atenção abaixo.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ai-grid margin-top-md">
+                                <!-- Savings & Economy Tips -->
+                                <div class="card">
+                                    <div class="card-header border-bottom">
+                                        <h2 class="text-success"><i data-lucide="trending-down"></i> Oportunidades de Economia</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="ai-advice-list" id="ai-savings-list">
+                                            <!-- Injected dynamically -->
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Risk & Warnings -->
+                                <div class="card">
+                                    <div class="card-header border-bottom">
+                                        <h2 class="text-danger"><i data-lucide="alert-triangle"></i> Riscos Financeiros e Atrasos</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="ai-advice-list" id="ai-risks-list">
+                                            <!-- Injected dynamically -->
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Checklist Recommendations -->
+                                <div class="card col-span-2">
+                                    <div class="card-header border-bottom">
+                                        <h2 class="text-primary"><i data-lucide="check-square"></i> Próximos Passos Importantes Pendentes</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="ai-advice-list row-layout" id="ai-tasks-list">
+                                            <!-- Injected dynamically -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 12. INSPIRATIONS & EXTRAS TAB -->
+                <div id="tab-extras" class="tab-pane">
+                    <div class="section-header">
+                        <div>
+                            <h2>Inspirações & Recursos Extras</h2>
+                            <p class="section-desc">Gerencie presentes, padrinhos/madrinhas, painel de inspirações (Pinterest interno) e comparação de espaços.</p>
+                        </div>
+                    </div>
+
+                    <div class="tabs-sub-nav">
+                        <button class="sub-tab-btn active" data-subtab="gifts">Presentes Recebidos</button>
+                        <button class="sub-tab-btn" data-subtab="wedding-party">Padrinhos & Madrinhas</button>
+                        <button class="sub-tab-btn" data-subtab="venues">Comparador de Salões</button>
+                        <button class="sub-tab-btn" data-subtab="inspirations">Painel de Inspirações</button>
+                    </div>
+
+                    <!-- SUBTAB: GIFTS -->
+                    <div id="subtab-gifts" class="subtab-pane active">
+                        <div class="section-header-sub">
+                            <h3>Controle de Presentes</h3>
+                            <button class="btn btn-sm btn-primary" id="btn-add-gift"><i data-lucide="plus"></i> Registrar Presente</button>
+                        </div>
+                        <div class="card">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Presente</th>
+                                            <th>Convidado/Doador</th>
+                                            <th>Status</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gifts-table-body">
+                                        <!-- Injected by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUBTAB: WEDDING PARTY -->
+                    <div id="subtab-wedding-party" class="subtab-pane">
+                        <div class="section-header-sub">
+                            <h3>Padrinhos e Madrinhas</h3>
+                            <button class="btn btn-sm btn-primary" id="btn-add-member"><i data-lucide="plus"></i> Adicionar Membro</button>
+                        </div>
+                        <div class="wedding-party-grid" id="wedding-party-container">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- SUBTAB: VENUES -->
+                    <div id="subtab-venues" class="subtab-pane">
+                        <div class="section-header-sub">
+                            <h3>Comparador de Salões & Espaços</h3>
+                            <button class="btn btn-sm btn-primary" id="btn-add-venue"><i data-lucide="plus"></i> Cadastrar Salão</button>
+                        </div>
+                        <div class="venues-grid" id="venues-container">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- SUBTAB: INSPIRATIONS -->
+                    <div id="subtab-inspirations" class="subtab-pane">
+                        <div class="section-header-sub">
+                            <h3>Painel de Inspirações (Mural Virtual)</h3>
+                            <button class="btn btn-sm btn-primary" id="btn-add-inspiration"><i data-lucide="plus"></i> Adicionar Foto</button>
+                        </div>
+                        <div class="inspirations-grid" id="inspirations-container">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- ================== MODALS ================== -->
+    
+    <!-- Modal: Fornecedor -->
+    <div id="modal-vendor" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-vendor-title">Adicionar Fornecedor</h3>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-vendor">
+                <input type="hidden" id="vendor-id">
+                <div class="form-grid">
+                    <div class="form-group col-span-2">
+                        <label for="vendor-name">Nome do Fornecedor / Empresa*</label>
+                        <input type="text" id="vendor-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-category">Categoria*</label>
+                        <select id="vendor-category" class="form-control" required>
+                            <!-- Injected dynamically -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-status">Status de Negociação*</label>
+                        <select id="vendor-status" class="form-control" required>
+                            <option value="Pesquisando">Pesquisando</option>
+                            <option value="Orçamento recebido">Orçamento recebido</option>
+                            <option value="Em negociação">Em negociação</option>
+                            <option value="Fechado">Fechado</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-budget-value">Valor de Orçamento (R$)</label>
+                        <input type="number" id="vendor-budget-value" class="form-control" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-negotiated-value">Valor Fechado/Negociado (R$)</label>
+                        <input type="number" id="vendor-negotiated-value" class="form-control" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-phone">Telefone</label>
+                        <input type="text" id="vendor-phone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-whatsapp">WhatsApp</label>
+                        <input type="text" id="vendor-whatsapp" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-instagram">Instagram</label>
+                        <input type="text" id="vendor-instagram" class="form-control" placeholder="@username">
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-website">Site</label>
+                        <input type="url" id="vendor-website" class="form-control" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-quote-date">Data da Cotação</label>
+                        <input type="date" id="vendor-quote-date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="vendor-priority">Prioridade*</label>
+                        <select id="vendor-priority" class="form-control" required>
+                            <option value="Essencial">Essencial</option>
+                            <option value="Importante">Importante</option>
+                            <option value="Desejável">Desejável</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-span-2">
+                        <label for="vendor-notes">Observações</label>
+                        <textarea id="vendor-notes" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Tarefa (Checklist) -->
+    <div id="modal-task" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Nova Tarefa</h3>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-task">
+                <div class="form-group">
+                    <label for="task-title">Descrição da Tarefa*</label>
+                    <input type="text" id="task-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="task-period">Período Ideal*</label>
+                    <select id="task-period" class="form-control" required>
+                        <option value="12m">12 meses antes</option>
+                        <option value="9m">9 meses antes</option>
+                        <option value="6m">6 meses antes</option>
+                        <option value="3m">3 meses antes</option>
+                        <option value="1m">1 mês antes</option>
+                        <option value="1w">1 semana antes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-priority">Prioridade*</label>
+                    <select id="task-priority" class="form-control" required>
+                        <option value="Alta">Alta</option>
+                        <option value="Média" selected>Média</option>
+                        <option value="Baixa">Baixa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-due-date">Prazo Limite</label>
+                    <input type="date" id="task-due-date" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Evento / Cronograma -->
+    <div id="modal-event" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Adicionar Compromisso</h3>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-event">
+                <div class="form-group">
+                    <label for="event-title">Título do Evento*</label>
+                    <input type="text" id="event-title" class="form-control" placeholder="Reunião com fotógrafo, degustação..." required>
+                </div>
+                <div class="form-group">
+                    <label for="event-type">Tipo*</label>
+                    <select id="event-type" class="form-control" required>
+                        <option value="Reunião">Reunião com Fornecedor</option>
+                        <option value="Pagamento">Data de Pagamento</option>
+                        <option value="Degustação">Degustação</option>
+                        <option value="Ensaio">Ensaio</option>
+                        <option value="Outro">Outro Evento Relacionado</option>
+                    </select>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="event-date">Data*</label>
+                        <input type="date" id="event-date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-time">Hora</label>
+                        <input type="time" id="event-time" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="event-desc">Detalhes / Local</label>
+                    <input type="text" id="event-desc" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Anexar Documento -->
+    <div id="modal-document" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Anexar Documento / Contrato</h3>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-document">
+                <div class="form-group">
+                    <label for="doc-vendor-id">Fornecedor Associado*</label>
+                    <select id="doc-vendor-id" class="form-control" required>
+                        <!-- Only closed/negotiating vendors -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="doc-type">Tipo de Documento*</label>
+                    <select id="doc-type" class="form-control" required>
+                        <option value="Contrato">Contrato de Prestação de Serviços</option>
+                        <option value="Comprovante">Comprovante de Pagamento / Recibo</option>
+                        <option value="Orçamento">Proposta Comercial / PDF</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="doc-file-name">Nome do Arquivo*</label>
+                    <input type="text" id="doc-file-name" class="form-control" placeholder="Ex: Contrato_Fotografia_Assinado.pdf" required>
+                </div>
+                <div class="form-group">
+                    <label for="doc-file-size">Tamanho Simulado</label>
+                    <select id="doc-file-size" class="form-control">
+                        <option value="1.2 MB">1.2 MB</option>
+                        <option value="4.5 MB">4.5 MB</option>
+                        <option value="850 KB">850 KB</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Importar Documento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Convidado -->
+    <div id="modal-guest" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Cadastrar Convidado</h3>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-guest">
+                <input type="hidden" id="guest-id">
+                <div class="form-group">
+                    <label for="guest-name">Nome Completo*</label>
+                    <input type="text" id="guest-name" class="form-control" required>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="guest-type">Tipo*</label>
+                        <select id="guest-type" class="form-control" required>
+                            <option value="Adulto">Adulto</option>
+                            <option value="Criança">Criança</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="guest-rsvp">RSVP (Status)*</label>
+                        <select id="guest-rsvp" class="form-control" required>
+                            <option value="Pendente" selected>Pendente</option>
+                            <option value="Confirmado">Confirmado</option>
+                            <option value="Recusado">Recusado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="guest-table">Mesa (Opcional)</label>
+                        <input type="text" id="guest-table" class="form-control" placeholder="Ex: 5 ou Família da Noiva">
+                    </div>
+                    <div class="form-group">
+                        <label for="guest-companion">Acompanhante de (Opcional)</label>
+                        <input type="text" id="guest-companion" class="form-control" placeholder="Nome do titular">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Presente -->
+    <div id="modal-gift" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Registrar Presente</h3>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-gift">
+                <div class="form-group">
+                    <label for="gift-name">Descrição do Presente*</label>
+                    <input type="text" id="gift-name" class="form-control" placeholder="Ex: Jogo de Panelas Le Creuset" required>
+                </div>
+                <div class="form-group">
+                    <label for="gift-giver">Quem deu o presente?*</label>
+                    <input type="text" id="gift-giver" class="form-control" placeholder="Nome do Convidado" required>
+                </div>
+                <div class="form-group">
+                    <label for="gift-status">Status*</label>
+                    <select id="gift-status" class="form-control" required>
+                        <option value="Recebido">Recebido</option>
+                        <option value="Agradecido">Agradecido (Mensagem enviada)</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Padrinho/Madrinha -->
+    <div id="modal-member" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Adicionar Membro do Cortejo</h3>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-member">
+                <div class="form-group">
+                    <label for="member-name">Nome*</label>
+                    <input type="text" id="member-name" class="form-control" required>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="member-role">Papel*</label>
+                        <select id="member-role" class="form-control" required>
+                            <option value="Padrinho">Padrinho</option>
+                            <option value="Madrinha">Madrinha</option>
+                            <option value="Pajem">Pajem</option>
+                            <option value="Dama de Honra">Dama de Honra</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="member-side">Lado*</label>
+                        <select id="member-side" class="form-control" required>
+                            <option value="Noiva">Noiva</option>
+                            <option value="Noivo">Noivo</option>
+                            <option value="Ambos">Ambos</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="member-attire">Traje Definido</label>
+                    <input type="text" id="member-attire" class="form-control" placeholder="Ex: Terno Grafite / Vestido Rose Gold">
+                </div>
+                <div class="form-group">
+                    <label for="member-presence">Presença Confirmada*</label>
+                    <select id="member-presence" class="form-control" required>
+                        <option value="Sim">Confirmado</option>
+                        <option value="Não">Pendente / Não Confirmado</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Salão / Espaço -->
+    <div id="modal-venue" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Adicionar Espaço para Comparação</h3>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-venue">
+                <div class="form-group">
+                    <label for="venue-name">Nome do Espaço*</label>
+                    <input type="text" id="venue-name" class="form-control" required>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="venue-capacity">Capacidade (Pessoas)*</label>
+                        <input type="number" id="venue-capacity" class="form-control" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="venue-cost">Custo Total de Locação (R$)*</label>
+                        <input type="number" id="venue-cost" class="form-control" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="venue-address">Endereço</label>
+                    <input type="text" id="venue-address" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="venue-services">Serviços Inclusos (ex: Buffet, Som, Segurança)</label>
+                    <input type="text" id="venue-services" class="form-control" placeholder="Separados por vírgula">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Inspiração -->
+    <div id="modal-inspiration" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Adicionar Foto de Inspiração</h3>
+                <button class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-inspiration">
+                <div class="form-group">
+                    <label for="inspire-title">Título/Legenda*</label>
+                    <input type="text" id="inspire-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="inspire-url">URL da Imagem*</label>
+                    <input type="url" id="inspire-url" class="form-control" placeholder="https://images.unsplash.com/..." required>
+                </div>
+                <div class="form-group">
+                    <label for="inspire-tag">Tag / Categoria*</label>
+                    <select id="inspire-tag" class="form-control" required>
+                        <option value="Vestido">Vestido e Beleza</option>
+                        <option value="Decoração">Decoração</option>
+                        <option value="Flores">Bouquet & Flores</option>
+                        <option value="Bolo">Bolo & Doces</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main JavaScript Loader -->
+    <script type="module" src="app.js?v=1.3"></script>
+</body>
+</html>
