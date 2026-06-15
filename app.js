@@ -193,6 +193,12 @@ class WeddingApp {
 
                 // Route custom tab triggers
                 this.onTabActivate(tabId);
+
+                // Close mobile sidebar drawer if open
+                const sidebar = document.querySelector(".sidebar");
+                const overlay = document.getElementById("sidebar-overlay");
+                if (sidebar) sidebar.classList.remove("active");
+                if (overlay) overlay.classList.remove("active");
             });
         });
 
@@ -272,6 +278,21 @@ class WeddingApp {
         document.getElementById("btn-quick-export").addEventListener("click", () => {
             this.exportCSV();
         });
+
+        // Mobile Drawer Toggle
+        const btnMenu = document.getElementById("btn-mobile-menu");
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.getElementById("sidebar-overlay");
+        if (btnMenu && sidebar && overlay) {
+            btnMenu.addEventListener("click", () => {
+                sidebar.classList.add("active");
+                overlay.classList.add("active");
+            });
+            overlay.addEventListener("click", () => {
+                sidebar.classList.remove("active");
+                overlay.classList.remove("active");
+            });
+        }
     }
 
     // Callbacks when a Tab is opened
@@ -419,6 +440,17 @@ class WeddingApp {
             } else {
                 countdownEl.textContent = "---";
                 if (countdownDetail) countdownDetail.textContent = `Ocorreu há ${Math.abs(diffDays)} dias`;
+            }
+        }
+
+        const mobileCountdownEl = document.getElementById("mobile-countdown-days");
+        if (mobileCountdownEl) {
+            if (diffDays > 0) {
+                mobileCountdownEl.textContent = String(diffDays);
+            } else if (diffDays === 0) {
+                mobileCountdownEl.textContent = "HOJE";
+            } else {
+                mobileCountdownEl.textContent = "---";
             }
         }
     }

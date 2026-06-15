@@ -1878,14 +1878,117 @@ h1, h2, h3, h4, h5, h6 {
     gap: 24px;
 }
 
+/* Mobile elements hidden by default */
+.mobile-header {
+    display: none;
+}
+
+.sidebar-overlay {
+    display: none;
+}
+
 /* Responsive Media Queries */
 @media (max-width: 1024px) {
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-color);
+        padding: 12px 24px;
+        height: 60px;
+        z-index: 100;
+        position: sticky;
+        top: 0;
+    }
+    
+    .mobile-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--text-primary);
+    }
+    
+    .mobile-brand .brand-icon {
+        color: var(--accent-color);
+        width: 22px;
+        height: 22px;
+    }
+    
+    .mobile-countdown {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        background-color: var(--accent-light);
+        padding: 4px 10px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .mobile-countdown .countdown-days {
+        color: var(--accent-color);
+        font-weight: 700;
+    }
+
     .app-container {
         grid-template-columns: 1fr;
+        height: 100vh;
+        overflow: hidden;
     }
     
     .sidebar {
-        display: none; /* In a real app we'd toggle it, but we fit within grid layouts */
+        display: flex !important;
+        position: fixed;
+        top: 0;
+        left: -280px; /* Hidden off-screen */
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease-in-out;
+        background-color: var(--bg-sidebar);
+        box-shadow: none;
+    }
+    
+    .sidebar.active {
+        left: 0;
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.25);
+    }
+    
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 999;
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    .main-content {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .top-header {
+        display: none; /* Hide large desktop header */
+    }
+    
+    .content-body {
+        height: calc(100vh - 60px);
+        padding: 20px 16px 100px 16px;
     }
     
     .dashboard-grid {
@@ -1936,5 +2039,9 @@ h1, h2, h3, h4, h5, h6 {
     
     .highlights-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .content-body {
+        padding: 16px 12px 100px 12px;
     }
 }

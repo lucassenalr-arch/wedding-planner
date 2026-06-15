@@ -78,8 +78,26 @@
             </div>
         </aside>
 
+        <!-- Sidebar overlay for mobile drawer -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
         <!-- Main Content Area -->
         <main class="main-content">
+            <!-- Mobile Header -->
+            <div class="mobile-header">
+                <button id="btn-mobile-menu" class="btn-icon" aria-label="Abrir Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+                <div class="mobile-brand">
+                    <i data-lucide="heart" class="brand-icon"></i>
+                    <span>Amour & Co.</span>
+                </div>
+                <div class="mobile-countdown" title="Dias para o casamento">
+                    <i data-lucide="calendar" style="width: 14px; height: 14px; color: var(--accent-color);"></i>
+                    <span id="mobile-countdown-days" class="countdown-days">000</span>d
+                </div>
+            </div>
+
             <!-- Top Header -->
             <header class="top-header">
                 <div class="header-left">
