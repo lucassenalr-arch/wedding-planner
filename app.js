@@ -195,7 +195,7 @@ class WeddingApp {
                 this.onTabActivate(tabId);
 
                 // Close mobile sidebar drawer if open
-                const sidebar = document.querySelector(".sidebar");
+                const sidebar = document.getElementById("app-sidebar");
                 const overlay = document.getElementById("sidebar-overlay");
                 if (sidebar) sidebar.classList.remove("active");
                 if (overlay) overlay.classList.remove("active");
@@ -270,25 +270,38 @@ class WeddingApp {
         }
 
         // Search & Filter listeners
-        document.getElementById("search-vendor").addEventListener("input", () => renderVendors(this));
-        document.getElementById("filter-vendor-category").addEventListener("change", () => renderVendors(this));
-        document.getElementById("filter-vendor-status").addEventListener("change", () => renderVendors(this));
+        const searchVendor = document.getElementById("search-vendor");
+        if (searchVendor) searchVendor.addEventListener("input", () => renderVendors(this));
+        
+        const filterCat = document.getElementById("filter-vendor-category");
+        if (filterCat) filterCat.addEventListener("change", () => renderVendors(this));
+        
+        const filterStatus = document.getElementById("filter-vendor-status");
+        if (filterStatus) filterStatus.addEventListener("change", () => renderVendors(this));
 
         // Export Button
-        document.getElementById("btn-quick-export").addEventListener("click", () => {
-            this.exportCSV();
-        });
+        const btnExport = document.getElementById("btn-quick-export");
+        if (btnExport) {
+            btnExport.addEventListener("click", () => {
+                this.exportCSV();
+            });
+        }
 
         // Mobile Drawer Toggle
         const btnMenu = document.getElementById("btn-mobile-menu");
-        const sidebar = document.querySelector(".sidebar");
+        const sidebar = document.getElementById("app-sidebar");
         const overlay = document.getElementById("sidebar-overlay");
+        
         if (btnMenu && sidebar && overlay) {
-            btnMenu.addEventListener("click", () => {
+            btnMenu.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 sidebar.classList.add("active");
                 overlay.classList.add("active");
             });
-            overlay.addEventListener("click", () => {
+            overlay.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 sidebar.classList.remove("active");
                 overlay.classList.remove("active");
             });
