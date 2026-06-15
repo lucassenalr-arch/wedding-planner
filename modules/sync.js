@@ -365,7 +365,17 @@ export function initSync(app) {
     };
 
     if (btnSyncSettings) btnSyncSettings.addEventListener("click", openSyncModal);
-    if (btnMobileSync) btnMobileSync.addEventListener("click", () => syncWithCloud(app, true));
+    
+    if (btnMobileSync) {
+        btnMobileSync.addEventListener("click", () => {
+            const config = app.state.syncConfig;
+            if (!config || config.provider === 'none') {
+                openSyncModal();
+            } else {
+                syncWithCloud(app, true);
+            }
+        });
+    }
 
     // Import RoutineFlow Credentials
     if (btnImportRF) {
