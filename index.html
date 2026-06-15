@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="styles.css?v=1.4">
+    <link rel="stylesheet" href="styles.css?v=1.5">
 </head>
 <body>
     <div class="app-container">
@@ -71,10 +71,10 @@
                     <i data-lucide="sun" class="theme-icon-light" style="display:none;"></i>
                     <span>Modo Escuro</span>
                 </button>
-                <div class="sync-status">
-                    <i data-lucide="cloud-lightning" class="sync-icon"></i>
-                    <span>Dados Salvos Localmente</span>
-                </div>
+                <button id="btn-sync-settings" class="btn-icon-toggle" style="margin-top: 8px;" title="Configurações de Sincronização">
+                    <i data-lucide="cloud-lightning" class="sync-icon" id="sync-status-icon"></i>
+                    <span id="sync-status-text">Sincronização Local</span>
+                </button>
             </div>
         </aside>
 
@@ -92,9 +92,14 @@
                     <i data-lucide="heart" class="brand-icon"></i>
                     <span>Amour & Co.</span>
                 </div>
-                <div class="mobile-countdown" title="Dias para o casamento">
-                    <i data-lucide="calendar" style="width: 14px; height: 14px; color: var(--accent-color);"></i>
-                    <span id="mobile-countdown-days" class="countdown-days">000</span>d
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button id="btn-mobile-sync" class="btn-icon" title="Sincronizar com a Nuvem" style="padding: 4px;">
+                        <i data-lucide="refresh-cw" style="width: 16px; height: 16px; color: var(--text-secondary);"></i>
+                    </button>
+                    <div class="mobile-countdown" title="Dias para o casamento">
+                        <i data-lucide="calendar" style="width: 14px; height: 14px; color: var(--accent-color);"></i>
+                        <span id="mobile-countdown-days" class="countdown-days">000</span>d
+                    </div>
                 </div>
             </div>
 
@@ -1379,7 +1384,65 @@
         </div>
     </div>
 
+    <!-- Cloud Sync Settings Modal -->
+    <div id="modal-sync" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Sincronização em Nuvem</h3>
+                <button type="button" class="btn-close-modal">&times;</button>
+            </div>
+            <form id="form-sync" class="form-grid" style="padding: 20px;">
+                <div class="form-group col-span-2">
+                    <label for="sync-provider">Provedor de Nuvem</label>
+                    <select id="sync-provider" class="form-control w-full">
+                        <option value="none">Desativado (Apenas local)</option>
+                        <option value="gist">GitHub Gist (Recomendado)</option>
+                        <option value="firebase">Firebase Realtime DB</option>
+                    </select>
+                </div>
+
+                <!-- GitHub Gist Fields -->
+                <div id="sync-gist-fields" class="form-group col-span-2" style="display: none; gap: 12px; flex-direction: column;">
+                    <div class="form-group">
+                        <label for="sync-gist-id">Gist ID</label>
+                        <input type="text" id="sync-gist-id" class="form-control" placeholder="Ex: 8a9f02c61e4b38fa74dc2a912d...">
+                    </div>
+                    <div class="form-group">
+                        <label for="sync-gist-token">Token do GitHub (Personal Access Token)</label>
+                        <input type="password" id="sync-gist-token" class="form-control" placeholder="Ex: ghp_xxxxxxxxxxxxxxxxxxxx">
+                    </div>
+                    <div class="sim-result-box" style="font-size: 0.75rem; border-style: dotted; line-height: 1.4;">
+                        💡 <strong>Como usar:</strong> Crie um Gist no <a href="https://gist.github.com" target="_blank" style="color: var(--accent-color); text-decoration: underline;">gist.github.com</a> com um arquivo <code>wedding_planner_state.json</code> contendo <code>{}</code>. Depois, gere um token com escopo <code>gist</code> em <a href="https://github.com/settings/tokens" target="_blank" style="color: var(--accent-color); text-decoration: underline;">github.com</a>. Cole ambos aqui.
+                    </div>
+                </div>
+
+                <!-- Firebase Fields -->
+                <div id="sync-firebase-fields" class="form-group col-span-2" style="display: none; gap: 12px; flex-direction: column;">
+                    <div class="form-group">
+                        <label for="sync-firebase-url">URL do Firebase Realtime DB</label>
+                        <input type="text" id="sync-firebase-url" class="form-control" placeholder="https://[projeto]-default-rtdb.firebaseio.com/wedding.json">
+                    </div>
+                    <div class="sim-result-box" style="font-size: 0.75rem; border-style: dotted; line-height: 1.4;">
+                        💡 <strong>Como usar:</strong> Crie um banco Realtime DB no Firebase em "modo de teste" (leitura e escrita públicas). Copie a URL do banco e cole aqui, adicionando <code>/wedding.json</code> ao final.
+                    </div>
+                </div>
+
+                <!-- Auto-detect Routine Flow config option -->
+                <div id="sync-auto-detect" class="form-group col-span-2" style="display: none; background-color: var(--accent-light); padding: 12px; border-radius: 8px; border: 1px solid var(--accent-color); flex-direction: column; gap: 6px;">
+                    <span style="font-size: 0.8rem; font-weight: 600; color: var(--accent-color);">Configurações do RoutineFlow Detectadas!</span>
+                    <span style="font-size: 0.75rem; color: var(--text-secondary);">Encontramos credenciais de nuvem salvas no RoutineFlow. Deseja importá-las?</span>
+                    <button type="button" id="btn-import-routineflow-sync" class="btn btn-sm btn-primary" style="margin-top: 4px; align-self: flex-start;">Importar Credenciais</button>
+                </div>
+
+                <div class="modal-footer col-span-2" style="margin-top: 12px; padding-top: 12px; display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-secondary btn-cancel" style="flex: 1;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Salvar Ajustes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Main JavaScript Loader -->
-    <script type="module" src="app.js?v=1.4"></script>
+    <script type="module" src="app.js?v=1.5"></script>
 </body>
 </html>

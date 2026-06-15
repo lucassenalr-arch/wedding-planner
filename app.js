@@ -7,6 +7,7 @@ import { initContracts, renderContracts, populateDocumentVendorSelect, addAuditL
 import { initGuests, renderGuests, addGuestTemplateData } from "./modules/guests.js";
 import { initExtraFeatures, renderSubTab, seedInspirations } from "./modules/extra-features.js";
 import { runAILearning } from "./modules/ai-assistant.js";
+import { initSync, syncWithCloud } from "./modules/sync.js";
 
 // Global App State
 class WeddingApp {
@@ -56,8 +57,97 @@ class WeddingApp {
     }
 
     // Save state to localStorage
-    saveState() {
+    saveState(isFromSync = false) {
+        if (!isFromSync) {
+            // run comparison and inject item-level updatedAt and deleted map
+            this.state.deleted = this.state.deleted || {};
+            const saved = localStorage.getItem("amour_wedding_planner_state");
+            if (saved) {
+                try {
+                    const prevState = JSON.parse(saved);
+                    if (prevState.deleted) {
+                        this.state.deleted = { ...prevState.deleted, ...this.state.deleted };
+                    }
+                    
+                    const arrayKeys = ['vendors', 'tasks', 'events', 'documents', 'payments', 'guests', 'gifts', 'weddingParty', 'venues', 'inspirations', 'auditLog'];
+                    const now = Date.now();
+                    
+                    // Comparison helper
+                    const areObjectsEqual = (a, b) => {
+                        if (a === b) return true;
+                        if (typeof a !== 'object' || a === null || typeof b !== 'object' || b === null) return false;
+                        const keysA = Object.keys(a).filter(k => k !== 'updatedAt');
+                        const keysB = Object.keys(b).filter(k => k !== 'updatedAt');
+                        if (keysA.length !== keysB.length) return false;
+                        for (const key of keysA) {
+                            if (!keysB.includes(key)) return false;
+                            const valA = a[key];
+                            const valB = b[key];
+                            if (typeof valA === 'object' && valA !== null && typeof valB === 'object' && valB !== null) {
+                                if (!areObjectsEqual(valA, valB)) return false;
+                            } else if (valA !== valB) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    };
+                    
+                    arrayKeys.forEach(key => {
+                        const prevArr = prevState[key] || [];
+                        const currArr = this.state[key] || [];
+                        const prevMap = new Map();
+                        prevArr.forEach(item => { if (item && item.id) prevMap.set(item.id, item); });
+                        
+                        // Check for new/modified
+                        currArr.forEach(item => {
+                            if (item && item.id) {
+                                const prevItem = prevMap.get(item.id);
+                                if (!prevItem) {
+                                    item.updatedAt = now;
+                                } else {
+                                    if (!areObjectsEqual(item, prevItem)) {
+                                        item.updatedAt = now;
+                                    } else {
+                                        item.updatedAt = prevItem.updatedAt || now;
+                                    }
+                                }
+                            }
+                        });
+                        
+                        // Check for deleted
+                        const currIds = new Set(currArr.filter(item => item && item.id).map(item => item.id));
+                        prevArr.forEach(item => {
+                            if (item && item.id && !currIds.has(item.id)) {
+                                this.state.deleted[item.id] = now;
+                            }
+                        });
+                    });
+                } catch (e) {
+                    console.error("Erro ao comparar estados em saveState:", e);
+                }
+            } else {
+                // First time saving, initialize updatedAt on all items
+                const now = Date.now();
+                const arrayKeys = ['vendors', 'tasks', 'events', 'documents', 'payments', 'guests', 'gifts', 'weddingParty', 'venues', 'inspirations', 'auditLog'];
+                arrayKeys.forEach(key => {
+                    const currArr = this.state[key] || [];
+                    currArr.forEach(item => {
+                        if (item && item.id) {
+                            item.updatedAt = item.updatedAt || now;
+                        }
+                    });
+                });
+            }
+            
+            this.state.updatedAt = Date.now();
+        }
+        
         localStorage.setItem("amour_wedding_planner_state", JSON.stringify(this.state));
+        
+        // Trigger auto-sync if provider is set
+        if (!isFromSync && this.state.syncConfig && this.state.syncConfig.provider !== 'none') {
+            syncWithCloud(this);
+        }
     }
 
     // Log action to audit trail
@@ -354,6 +444,7 @@ class WeddingApp {
         initContracts(this);
         initGuests(this);
         initExtraFeatures(this);
+        initSync(this);
     }
 
     // Handle Vendor Form Submission

@@ -2045,3 +2045,17 @@ h1, h2, h3, h4, h5, h6 {
         padding: 16px 12px 100px 12px;
     }
 }
+
+/* Sync animations and indicators */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spin-animation {
+    animation: spin 1.5s linear infinite;
+}
+
+.sync-icon {
+    transition: color 0.3s ease;
+}
