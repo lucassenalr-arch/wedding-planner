@@ -157,7 +157,7 @@ function updateSyncStatusUI(status, text) {
     if (syncStatusText) syncStatusText.textContent = text;
     
     if (syncStatusIcon) {
-        syncStatusIcon.className = `sync-icon ${status}`;
+        syncStatusIcon.setAttribute("class", `sync-icon ${status}`);
         if (status === 'offline') {
             syncStatusIcon.style.color = 'var(--text-light)';
         } else if (status === 'syncing') {
